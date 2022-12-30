@@ -1,7 +1,5 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:uni_links/uni_links.dart';
+import 'package:flutter_deeplink_example/deeplink_mixin.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -26,50 +24,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  StreamSubscription? _sub;
-
-  @override
-  void initState() {
-    init();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _sub?.cancel();
-    super.dispose();
-  }
-
-  Future<void> init() async {
-    /// DeepLinkを監視する
-    _sub = uriLinkStream.listen((Uri? uri) {
-      if (uri != null) {
-        final host = uri.host; // myapp
-        switch (host) {
-          case "page1": // myapp://page1
-            pushPage(const Page1());
-            break;
-          case "page2": // myapp://page2
-            pushPage(const Page2());
-            break;
-        }
-      }
-    });
-  }
-
-  /// [page]に画面遷移する
-  Future<void> pushPage(Widget page) async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return page;
-        },
-      ),
-    );
-  }
-
+class _HomePageState extends State<HomePage> with DeepLinkMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
